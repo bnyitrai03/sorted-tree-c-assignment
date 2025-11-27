@@ -7,21 +7,29 @@
 // You are allowed to change anything about this function to fix it
 int main() {
     char* commandBuffer = (char*)malloc(sizeof(char) * 20);
+    if(commandBuffer == NULL) return 1;
 
     Tree *tree = tree_create();
+    if(tree == NULL){
+        free(commandBuffer);
+        return 1;
+    }
 
     for(;;) {
         fgets(commandBuffer, 20, stdin);
+        commandBuffer[strcspn(commandBuffer, "\n")] = 0;
+
 
         // Quit on EOF or 'q'
-        if (feof(stdin) || commandBuffer == "q"){
+        if (feof(stdin) || commandBuffer[0] == "q"){
             break;
         }
 
         tree = handleString(commandBuffer, tree);
     };
 
-    free(tree);
+    tree_delete(tree);
+    free(commandBuffer);
 
     return 0;
 }
@@ -33,11 +41,6 @@ int main() {
  * @param command The command string to handle
  */
 Tree* handleString(char command[], Tree *tree){
-    if (command == NULL){
-        fprintf(stderr, "Invalid command; null pointer\n");
-        return tree;
-    }
-
     switch(command[0]){
         case 'i':
             insert(command, tree);
@@ -65,39 +68,50 @@ Tree* handleString(char command[], Tree *tree){
 // You are allowed to change anything about this function to tix it
 Tree* insert(char* command, Tree* tree) {
     int age;
-    char* name = malloc(sizeof(char) * 20);
+    char* name = malloc(sizeof(char) * 14);
+    if(name == NULL) return;
 
-    if (2 != sscanf(command, "i %d %s", &age, name)){
+    if (sscanf(command, "i %d %s", &age, name) != 2){
         fprintf(stderr, "Failed to parse insert command: not enough parameters filled\n");
+        free(name);
         return NULL;
     }
 
     if (tree == NULL){
         tree = tree_create();
     }
-
     tree_insert(tree, age, name);
+
+    free(name);
     return tree;
 }
 
 // You are allowed to change anything about this function to fix it
 void erase(char* command, Tree* tree) {
     int age;
-    char* name = malloc(sizeof(char) * 20);
+    char* name = malloc(sizeof(char) * 14);
+    if(name == NULL) return;
 
-    if (2 != sscanf(command, "e %d %s", &age, name)){
+    if (sscanf(command, "e %d %s", &age, name) != 2){
         fprintf(stderr, "Failed to parse erase command: not enough parameters filled\n");
+        free(name);
+        return;
     }
+
     tree_erase(tree, age, name);
+    free(name);
 }
 
 // You are allowed to change anything about this function to fix it
 void check(char* command, Tree* tree) {
     int age;
-    char* name = malloc(sizeof(char) * 20);
+    char* name = malloc(sizeof(char) * 14);
+    if(name == NULL) return;
 
-    if (2 != sscanf(command, "c %d %s", &age, name)){
+    if (sscanf(command, "c %d %s", &age, name) != 2){
         fprintf(stderr, "Failed to parse check command\n");
+        free(name);
+        return;
     }
 
     Node* result = tree_find(tree, age, name);
@@ -106,4 +120,5 @@ void check(char* command, Tree* tree) {
     } else {
         printf("n\n");
     }
+    free(name);
 }

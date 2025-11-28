@@ -175,10 +175,9 @@ void tree_print_node(Node* node){
 void tree_print(Tree* tree, int printNewline){
     if (tree == NULL) {
         printf("null");
-        return;
+    } else {
+        tree_print_node(tree->root);
     }
-
-    tree_print_node(tree->root);
 
     if (printNewline){
         printf("\n");

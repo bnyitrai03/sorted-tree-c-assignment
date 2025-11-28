@@ -1,0 +1,12 @@
+p
+i 25 Alice
+i 10 Bob
+i 30 Charlie
+p
+c 10 Bob
+c 99 Dan
+e 10 Bob
+p
+x
+p
+q

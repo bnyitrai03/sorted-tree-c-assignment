@@ -39,11 +39,15 @@ void tree_delete(Tree* tree) {
 // Returns a new node or NULL on failure
 Node* create_node(int age, const char *name) {
     Node *node = malloc(sizeof(Node));
-    if (node == NULL) return NULL;
+    if (node == NULL){
+        fprintf(stderr, "Memory allocation failed for new node\n");
+        return NULL;
+    }
 
     node->name = malloc(strlen(name) + 1);
     if (node->name == NULL) {
         free(node);
+        fprintf(stderr, "Memory allocation failed for node name\n");
         return NULL;
     }
     strncpy(node->name, name, (strlen(name) + 1));
@@ -56,7 +60,12 @@ Node* create_node(int age, const char *name) {
 
 // Helper function: you are allowed to change this to your preferences
 void node_insert(Node* node, int age, char* name) {
-    if (age <= node->age){   // what if age is equal???
+    if (age == node->age) {
+        fprintf(stderr, "Duplicate age ignored: %d\n", age);
+        return;
+    }
+
+    if (age < node->age){
         if (node->left == NULL){
             node->left = create_node(age, name);
         } else {
@@ -99,6 +108,10 @@ Node* node_erase(Node* node, int age, char* name) {
         node->right = node_erase(node->right, age, name);
     } 
     else {
+        // If name doesn't match don't delete
+        if (strcmp(node->name, name) != 0) {
+            return node;
+        }
 
         if (node->left == NULL && node->right == NULL){ // 0 child:
             free(node->name);
@@ -108,9 +121,15 @@ Node* node_erase(Node* node, int age, char* name) {
         else if (node->left != NULL && node->right != NULL){ // 2 child:
             Node* predecessor = get_predecessor(node);
             // Swap predecessor with node to delete
+            char* new_name = malloc(strlen(predecessor->name) + 1);
+            if(new_name == NULL) {
+                fprintf(stderr, "Memory allocation failed during node erase\n");
+                return node;
+            }
             free(node->name);
-            node->name = malloc(strlen(predecessor->name) + 1);
-            strncpy(node->name, predecessor->name, (strlen(predecessor->name + 1)));
+            node->name = new_name;
+
+            strncpy(node->name, predecessor->name, (strlen(predecessor->name) + 1));
             node->age = predecessor->age;
             // Delete the predecessor node from the left subtree
             node->left = node_erase(node->left, predecessor->age, predecessor->name);

@@ -6,14 +6,14 @@
 
 // You are allowed to change anything about this function to fix it
 int main() {
-    char commandBuffer[20] = {};
+    char commandBuffer[64] = {};
     Tree *tree = tree_create();
     if (tree == NULL){
         return 1;
     }
 
     for(;;) {
-        if (fgets(commandBuffer, 20, stdin) == NULL) break;
+        if (fgets(commandBuffer, sizeof(commandBuffer), stdin) == NULL) break;
         char *newline = strchr(commandBuffer, '\n');
 
         if (newline) {
@@ -103,13 +103,17 @@ void erase(char* command, Tree* tree) {
 
 // You are allowed to change anything about this function to fix it
 void check(char* command, Tree* tree) {
-    if (tree == NULL) return;
-
     int age;
     char name[16] = {};
 
     if (sscanf(command, "c %d %15s", &age, name) != 2){
         fprintf(stderr, "Failed to parse check command\n");
+        return;
+    }
+
+    // If tree is NULL or item not found, print "n"
+    if (tree == NULL) {
+        printf("n\n");
         return;
     }
 

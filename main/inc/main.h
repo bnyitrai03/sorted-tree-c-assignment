@@ -1,4 +1,5 @@
 #ifndef C_IMPLEMENTATION_MAIN_H
+#define C_IMPLEMENTATION_MAIN_H
 
 #include "tree.h"
 
@@ -38,7 +39,5 @@ void erase(char* command, Tree* tree);
  * @return The tree passed as the input tree
  */
 void check(char* command, Tree* tree);
-
-#define C_IMPLEMENTATION_MAIN_H
 
 #endif //C_IMPLEMENTATION_MAIN_H

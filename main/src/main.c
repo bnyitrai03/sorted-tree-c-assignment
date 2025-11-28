@@ -6,7 +6,7 @@
 
 // You are allowed to change anything about this function to fix it
 int main() {
-    char commandBuffer[64] = {};
+    char commandBuffer[20] = {};
     Tree *tree = tree_create();
     if (tree == NULL){
         return 1;
@@ -108,12 +108,6 @@ void check(char* command, Tree* tree) {
 
     if (sscanf(command, "c %d %15s", &age, name) != 2){
         fprintf(stderr, "Failed to parse check command\n");
-        return;
-    }
-
-    // If tree is NULL or item not found, print "n"
-    if (tree == NULL) {
-        printf("n\n");
         return;
     }
 
